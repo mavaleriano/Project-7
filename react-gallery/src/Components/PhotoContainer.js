@@ -1,0 +1,1 @@
+// Class container where data can be managed with state
