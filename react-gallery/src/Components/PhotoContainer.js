@@ -4,19 +4,21 @@ import Photo from './Photo';
 import SearchForm from './SearchForm';
 
 class PhotoContainer extends React.Component {
+    
     render () {
-        if (!this.props.data)
+        // Trying to take care of times when query is not the default
+        let thing = this.props.match.params.animal.toString;
+        let query = this.props.query.toString();
+        if (thing === query)
         {
-            let animal = "cats"; //this.props.match.params.animal;
-            this.props.search(animal);
-            
-            
-        } else {
-            let temp = this.props.data;
+            console.log("FINALLY");
+        }
+        else
+        {
+            this.props.newQuery(thing);
         }
 
         const results = this.props.data;
-        console.dir(results);
 
         let pics = results.map(pic => 
                 <Photo
@@ -27,7 +29,6 @@ class PhotoContainer extends React.Component {
                     title={pic.title}
                     key={pic.id}
                 />
-            
         );
 
         return (

@@ -14,7 +14,8 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      pics: []
+      pics: [],
+      curQuery: "soccer"
     };
   }
 
@@ -24,18 +25,19 @@ class App extends React.Component {
   componentDidMount() {
     this.searchFetch();
   }
+
   /*
     Creating this searchFetch outside of componentDidMount so i can use it outside of componentDidMount
     This sends the fetch request and sets the response to state
   */
-  searchFetch = (query = "Soccer") => 
+  searchFetch = (query = this.state.curQuery) => 
   {
-    console.log(query);
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
       .then(response => response.json())
       .then(responseData => 
       {
         this.setState({ pics: responseData.photos.photo });
+        
       })
       .catch(error => 
       {
@@ -43,24 +45,40 @@ class App extends React.Component {
       })
   }
 
-  
+  handleQuery = (newQuery) => {
+    this.setState( prevState => {
+      return { 
+        curQuery: newQuery 
+      };    
+    });
+    this.searchFetch()
+  }
 
   render() {
     return (
-      // <BrowserRouter>
+       <BrowserRouter>
         <div className="container">
           <SearchForm /> 
           <Nav search={this.searchFetch} />
-          <PhotoContainer 
-            data={this.state.pics}
-            search={this.searchFetch} />
 
-          {/* <Switch>
-            <Route exact path="/" render={ (props) => <PhotoContainer data={this.state.pics} /> } />
-            <Route path="/:animal" render={ (props) => <PhotoContainer search={this.searchFetch} /> } />
-          </Switch> */}
+          <Switch>
+            <Route exact path="/" render={ (props) => 
+              <PhotoContainer 
+                data={this.state.pics}
+                search={this.searchFetch} 
+                /> } />
+
+            <Route exact path="/:animal" render={ (props) => 
+              <PhotoContainer
+              data={this.state.pics} {...props}
+              query={this.state.curQuery}
+              search={this.searchFetch}
+              newQuery={this.handleQuery}
+              /> } />
+
+          </Switch>
         </div>
-      // </BrowserRouter>
+       </BrowserRouter>
     );
   }
 }
