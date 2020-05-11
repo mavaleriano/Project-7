@@ -1,26 +1,68 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter,
+  Route,
+  Switch} from 'react-router-dom';
+import SearchForm from './Components/SearchForm';
+import Nav from './Components/Nav';
+import PhotoContainer from './Components/PhotoContainer';
+import apiKey from './config';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      pics: []
+    };
+  }
+
+  /*
+    Making sure to call this as soon as component mounts
+  */
+  componentDidMount() {
+    this.searchFetch();
+  }
+  /*
+    Creating this searchFetch outside of componentDidMount so i can use it outside of componentDidMount
+    This sends the fetch request and sets the response to state
+  */
+  searchFetch = (query = "Soccer") => 
+  {
+    console.log(query);
+    fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
+      .then(response => response.json())
+      .then(responseData => 
+      {
+        this.setState({ pics: responseData.photos.photo });
+      })
+      .catch(error => 
+      {
+        console.log('Error fetching and parsing data', error);
+      })
+  }
+
+  
+
+  render() {
+    return (
+      // <BrowserRouter>
+        <div className="container">
+          <SearchForm /> 
+          <Nav search={this.searchFetch} />
+          <PhotoContainer 
+            data={this.state.pics}
+            search={this.searchFetch} />
+
+          {/* <Switch>
+            <Route exact path="/" render={ (props) => <PhotoContainer data={this.state.pics} /> } />
+            <Route path="/:animal" render={ (props) => <PhotoContainer search={this.searchFetch} /> } />
+          </Switch> */}
+        </div>
+      // </BrowserRouter>
+    );
+  }
 }
 
 export default App;
