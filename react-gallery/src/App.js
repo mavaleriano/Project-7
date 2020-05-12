@@ -24,7 +24,7 @@ class App extends React.Component {
   }
 
   /*
-    Making sure to call this as soon as component mounts
+    Making sure to call this as soon as component mounts so fetch gets the required data
   */
   componentDidMount() {
     this._isMounted = true;
@@ -51,7 +51,7 @@ class App extends React.Component {
   }
 
   /**
-   * This takes care of the changing query value
+   * This takes care of the changing query value: it updates the state of curQuery and then calls the searchFetch function to get new data
    * Used below website as reference
    * https://learn.co/lessons/react-updating-state 
    */
@@ -61,7 +61,6 @@ class App extends React.Component {
       this.setState({
           curQuery: newQuery 
       }, () => this.searchFetch());
-      //this.history.push("umbrella");
     }
   }
 
@@ -73,13 +72,13 @@ class App extends React.Component {
     return (
        <BrowserRouter>
         <div className="container">
-          <SearchForm 
+          <SearchForm // Tried to pass params but I realized its not within Switch. When used within switch the search bar disappears
             newQuery={this.handleQuery}
           /> 
           <Nav search={this.searchFetch} />
 
           <Switch>
-            <Route exact path="/" render={ (props) => 
+            <Route exact path="/" render={ (props) => // Takes care of initial/main page
               <PhotoContainer 
                 data={this.state.pics} {...props}
                 query={this.state.curQuery}
@@ -87,31 +86,7 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            {/* <Route exact path="/cats" render={ (props) => 
-              <PhotoContainer 
-                data={this.state.pics} {...props}
-                query={this.state.curQuery}
-                search={this.searchFetch}
-                newQuery={this.handleQuery}
-                /> } />
-
-            <Route exact path="/dogs" render={ (props) => 
-              <PhotoContainer 
-                data={this.state.pics} {...props}
-                query={this.state.curQuery}
-                search={this.searchFetch}
-                newQuery={this.handleQuery}
-                /> } />
-
-            <Route exact path="/sunsets" render={ (props) => 
-              <PhotoContainer 
-                data={this.state.pics} {...props}
-                query={this.state.curQuery}
-                search={this.searchFetch}
-                newQuery={this.handleQuery}
-                /> } /> */}
-
-            <Route exact path="/:thing" render={ (props) => 
+            <Route exact path="/:thing" render={ (props) => // Responds whenever something is searched or clicked on that changes the init url
               <PhotoContainer
                 data={this.state.pics} {...props}
                 query={this.state.curQuery}

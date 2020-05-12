@@ -2,17 +2,18 @@
 import React from 'react';
 
 class SearchForm extends React.Component {
+    //Used below website as reference to try to make sure that search bar worked
     //https://therichpost.com/get-input-field-value-button-click-reactjs/
     constructor(props)
     {
         super(props);
         this.state = {value: ''};
-        this.addValue = this.addValue.bind(this);
+        this.newSearch = this.newSearch.bind(this);
         this.updateInput = this.updateInput.bind(this);
     }
 
     //https://stackoverflow.com/questions/41921411/fom-submit-after-preventdefault-when-using-react (How to continue submit after prevent submit)
-    addValue(e)
+    newSearch(e)
     {
         e.preventDefault();
         if(this.state.value !==undefined)
@@ -20,7 +21,7 @@ class SearchForm extends React.Component {
             let thing = this.state.value.toString();
             console.log('Your input value is: ' + thing);
             this.props.newQuery(thing);
-            //e.target.submit();
+            
             // let path = `{thing}`;
             // this.props.history.push(path);
         }
@@ -35,7 +36,7 @@ class SearchForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.addValue} className="search-form">
+            <form onSubmit={this.newSearch} className="search-form">
                 <input type="search" onChange={this.updateInput} name="search" placeholder="Search" required/>
                 <button type="submit" className="search-button">
                 <svg fill="#fff" height="24" viewBox="0 0 23 23" width="24" xmlns="http://www.w3.org/2000/svg">
