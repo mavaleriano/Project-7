@@ -6,10 +6,14 @@ import {
 import SearchForm from './Components/SearchForm';
 import Nav from './Components/Nav';
 import PhotoContainer from './Components/PhotoContainer';
+import NotFound from './Components/NotFound';
 import apiKey from './config';
 import './App.css';
 
 class App extends React.Component {
+
+  //https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component
+  _isMounted = false;
 
   constructor() {
     super();
@@ -23,6 +27,7 @@ class App extends React.Component {
     Making sure to call this as soon as component mounts
   */
   componentDidMount() {
+    this._isMounted = true;
     this.searchFetch();
   }
 
@@ -45,36 +50,76 @@ class App extends React.Component {
       })
   }
 
+  /**
+   * This takes care of the changing query value
+   * Used below website as reference
+   * https://learn.co/lessons/react-updating-state 
+   */
   handleQuery = (newQuery) => {
-    this.setState( prevState => {
-      return { 
-        curQuery: newQuery 
-      };    
-    });
-    this.searchFetch()
+    if (this._isMounted)
+    {
+      this.setState({
+          curQuery: newQuery 
+      }, () => this.searchFetch());
+      //this.history.push("umbrella");
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted =false;
   }
 
   render() {
     return (
        <BrowserRouter>
         <div className="container">
-          <SearchForm /> 
+          <SearchForm 
+            newQuery={this.handleQuery}
+          /> 
           <Nav search={this.searchFetch} />
 
           <Switch>
             <Route exact path="/" render={ (props) => 
               <PhotoContainer 
-                data={this.state.pics}
-                search={this.searchFetch} 
+                data={this.state.pics} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/:animal" render={ (props) => 
+            {/* <Route exact path="/cats" render={ (props) => 
+              <PhotoContainer 
+                data={this.state.pics} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } />
+
+            <Route exact path="/dogs" render={ (props) => 
+              <PhotoContainer 
+                data={this.state.pics} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } />
+
+            <Route exact path="/sunsets" render={ (props) => 
+              <PhotoContainer 
+                data={this.state.pics} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } /> */}
+
+            <Route exact path="/:thing" render={ (props) => 
               <PhotoContainer
-              data={this.state.pics} {...props}
-              query={this.state.curQuery}
-              search={this.searchFetch}
-              newQuery={this.handleQuery}
+                data={this.state.pics} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
               /> } />
+
+            <Route component={NotFound} />
 
           </Switch>
         </div>

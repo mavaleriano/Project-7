@@ -10,7 +10,7 @@ class Nav extends React.Component {
                 <ul>
                     <li><Link to='/cats'>Cats</Link></li>
                     <li><Link to='/dogs'>Dogs</Link></li>
-                    <li><Link to='/computers'>Computers</Link></li>
+                    <li><Link to='/sunsets'>Sunsets</Link></li>
                 </ul>
             </nav>
         );
