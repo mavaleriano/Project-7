@@ -22,18 +22,17 @@ class SearchForm extends React.Component {
         this.updateInput = this.updateInput.bind(this);
     }
 
-    //https://stackoverflow.com/questions/41921411/fom-submit-after-preventdefault-when-using-react (How to continue submit after prevent submit)
+    // Upon search submitted, it takes the value and called the newQuery function to request new fetch. It then uses the history object to update the url
     newSearch(e)
     {
         e.preventDefault();
         if(this.state.value !==undefined)
         {
             let thing = this.state.value.toString();
-            console.log('Your input value is: ' + thing);
             this.props.newQuery(thing);
             const { history } = this.props;
             let path = `/search/${thing}`;
-            if (history) history.replace(path);
+            if (history) history.push(path);
         }
     }
 

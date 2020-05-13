@@ -10,9 +10,14 @@ import NotFound from './Components/NotFound';
 import apiKey from './config';
 import './App.css';
 
-class App extends React.Component {
+/**
+ * HEY! This is my project 7: React Gallery App
+ * I'm aiming for
+ */
 
-  //https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component
+class App extends React.Component {
+  // Below website is reference to what I used that recommended the use of checking if mounted
+  // https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component
   _isMounted = false;
 
   constructor() {
@@ -40,7 +45,10 @@ class App extends React.Component {
   /*
     Creating this searchFetch outside of componentDidMount so i can use it outside of componentDidMount
     This sends the fetch request and sets the response to state
+    I individually called the cats, dogs, and sunsets fetch
   */
+
+  //**FOR GENERAL FETCHING */
   searchFetch = (query = this.state.curQuery) => 
   {
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
@@ -56,6 +64,7 @@ class App extends React.Component {
       })
   }
 
+  //**FOR CATS FETCHING */
   searchCats = (query = "cats") => 
   {
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
@@ -70,7 +79,8 @@ class App extends React.Component {
         console.log('Error fetching and parsing data', error);
       })
   }
-  
+
+  //**FOR DOGS FETCHING */
   searchDogs = (query = "dogs") => 
   {
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
@@ -85,6 +95,8 @@ class App extends React.Component {
         console.log('Error fetching and parsing data', error);
       })
   }
+  
+  //**FOR SUNSETS FETCHING */
   searchSunsets = (query = "sunsets") => 
   {
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
@@ -122,7 +134,7 @@ class App extends React.Component {
     return (
        <BrowserRouter>
         <div className="container">
-          <SearchForm // Tried to pass params but I realized its not within Switch. When used within switch the search bar disappears
+          <SearchForm //Both Searchform and Nav are headers so not included in Switch: learned the hard way!
             newQuery={this.handleQuery}
           /> 
           <Nav search={this.searchFetch} />
@@ -136,7 +148,7 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/cats" render={ (props) => // Takes care of initial/main page
+            <Route exact path="/cats" render={ (props) => // Takes care of /cats page: each of the following also sends as props the corresponding data
               <PhotoContainer 
                 data={this.state.cats} {...props}
                 query={this.state.curQuery}
@@ -144,7 +156,7 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/dogs" render={ (props) => // Takes care of initial/main page
+            <Route exact path="/dogs" render={ (props) => // Takes care of /dogs page
               <PhotoContainer 
                 data={this.state.dogs} {...props}
                 query={this.state.curQuery}
@@ -152,7 +164,7 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/sunsets" render={ (props) => // Takes care of initial/main page
+            <Route exact path="/sunsets" render={ (props) => // Takes care of /sunsets page
               <PhotoContainer 
                 data={this.state.sunsets} {...props}
                 query={this.state.curQuery}
@@ -160,15 +172,15 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/search/:thing" render={ (props) => // Responds whenever something is searched or clicked on that changes the init url
+            <Route exact path="/search/:thing" render={ (props) => // Responds whenever something is searched and following route component takes care of notfound urls
               <PhotoContainer
                 data={this.state.pics} {...props}
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
               /> } />
-
-            <Route component={NotFound} />
+            
+            <Route component={NotFound} /> 
 
           </Switch>
         </div>
