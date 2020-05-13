@@ -4,6 +4,10 @@ import Photo from './Photo';
 
 class PhotoContainer extends React.Component {
     
+    handleQuery = (thing) => {
+        this.props.newQuery(thing)
+    }
+
     render () {
         let counter = 0; //(controling for init exe of code)
         // Trying to take care of times when query is not the default
@@ -19,7 +23,7 @@ class PhotoContainer extends React.Component {
             }
             else
             {
-                this.props.newQuery(thing);
+                this.handleQuery(thing);
             }
         }
         const results = this.props.data;

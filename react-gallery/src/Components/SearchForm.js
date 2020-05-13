@@ -1,7 +1,17 @@
 // To search stuff. Keep track of it with state: so make it class component
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+
+// Below site helped me figure out how to get params object to header component
+//https://stackoverflow.com/questions/53539314/what-is-withrouter-for-in-react-router-dom
 
 class SearchForm extends React.Component {
+    static propTypes = {
+        match: PropTypes.object.isRequired,
+        location: PropTypes.object.isRequired,
+        history: PropTypes.object.isRequired
+      };
     //Used below website as reference to try to make sure that search bar worked
     //https://therichpost.com/get-input-field-value-button-click-reactjs/
     constructor(props)
@@ -21,9 +31,9 @@ class SearchForm extends React.Component {
             let thing = this.state.value.toString();
             console.log('Your input value is: ' + thing);
             this.props.newQuery(thing);
-            
-            // let path = `{thing}`;
-            // this.props.history.push(path);
+            const { history } = this.props;
+            let path = `${thing}`;
+            if (history) history.push(path);
         }
     }
 
@@ -35,7 +45,9 @@ class SearchForm extends React.Component {
     }
 
     render() {
+            
         return (
+
             <form onSubmit={this.newSearch} className="search-form">
                 <input type="search" onChange={this.updateInput} name="search" placeholder="Search" required/>
                 <button type="submit" className="search-button">
@@ -49,4 +61,5 @@ class SearchForm extends React.Component {
     }
 }
 
-export default SearchForm;
+
+export default withRouter(SearchForm);
