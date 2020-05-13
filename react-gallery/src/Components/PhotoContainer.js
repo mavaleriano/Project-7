@@ -18,7 +18,18 @@ class PhotoContainer extends React.Component {
         });
     }
 
-    render () { 
+    render () {
+        // This first if will make sure the right content is displayed each time you use the back and forward buttons
+        if((this.props.match.params.thing) && (this.props.query !== this.props.match.params.thing))
+         {
+             console.log("Now i'm gonna change the state");
+             this.props.search(this.props.match.params.thing);
+         }
+         // This will make sure the default path "/" gets set back to soccer when going back and forward
+         if(!this.props.match.params.thing && this.props.query !== "soccer")
+         {
+             this.props.search("soccer");
+         }
         // Saves props.data into results and then save the query into title to be later displayed
         const results = this.props.data;
         let title = this.props.query.toString().toUpperCase();
@@ -37,10 +48,10 @@ class PhotoContainer extends React.Component {
             title = "SUNSETS";
         }
 
-        // Setting correct response when there is no results
+        // Setting correct response when there is no results and while waiting
         if(results.length === 0 && this.state.mounted)
         {
-            title = `No results found for ${title}, try a different search..`;
+            title = `No results found for ${title} yet.. try a different search..`;
         }
         
         let pics = results.map(pic => 
@@ -53,15 +64,31 @@ class PhotoContainer extends React.Component {
                     key={pic.id}
                 />
         );
-            
-        return (
-            <div className="photo-container">
-                <h2>{title}</h2>
-                    <ul>
-                         {pics} 
-                    </ul>
-            </div>
-        );
+          
+        /**
+         * Used below website to figure out about conditional rendering for "Loading.."
+         * https://www.robinwieruch.de/conditional-rendering-react
+         */
+        if(this.state.mounted)
+        {
+            return (
+                
+                <div className="photo-container">
+                    <h2>{title}</h2>
+                        <ul>
+                            {pics} 
+                        </ul>
+                </div>  
+            );
+        }
+        else
+        {
+            return (
+                <div className="photo-container">
+                    <h2>Loading..</h2>
+                </div>
+            );
+        }
     }
 }
 

@@ -12,7 +12,8 @@ import './App.css';
 
 /**
  * HEY! This is my project 7: React Gallery App
- * I'm aiming for
+ * I'm aiming for Exceeds Expectations
+ * Some of the top-most comments were just for myself as I tried to organize the project initially
  */
 
 class App extends React.Component {
@@ -55,7 +56,10 @@ class App extends React.Component {
       .then(response => response.json())
       .then(responseData => 
       {
-        this.setState({ pics: responseData.photos.photo });
+        this.setState({ 
+          pics: responseData.photos.photo,
+          curQuery: query
+        });
         
       })
       .catch(error => 
