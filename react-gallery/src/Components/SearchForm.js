@@ -32,8 +32,8 @@ class SearchForm extends React.Component {
             console.log('Your input value is: ' + thing);
             this.props.newQuery(thing);
             const { history } = this.props;
-            let path = `${thing}`;
-            if (history) history.push(path);
+            let path = `/search/${thing}`;
+            if (history) history.replace(path);
         }
     }
 

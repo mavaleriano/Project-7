@@ -19,6 +19,9 @@ class App extends React.Component {
     super();
     this.state = {
       pics: [],
+      cats: [],
+      dogs: [],
+      sunsets: [],
       curQuery: "soccer"
     };
   }
@@ -29,6 +32,9 @@ class App extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     this.searchFetch();
+    this.searchCats();
+    this.searchDogs();
+    this.searchSunsets();
   }
 
   /*
@@ -42,6 +48,50 @@ class App extends React.Component {
       .then(responseData => 
       {
         this.setState({ pics: responseData.photos.photo });
+        
+      })
+      .catch(error => 
+      {
+        console.log('Error fetching and parsing data', error);
+      })
+  }
+
+  searchCats = (query = "cats") => 
+  {
+    fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
+      .then(response => response.json())
+      .then(responseData => 
+      {
+        this.setState({ cats: responseData.photos.photo });
+        
+      })
+      .catch(error => 
+      {
+        console.log('Error fetching and parsing data', error);
+      })
+  }
+  
+  searchDogs = (query = "dogs") => 
+  {
+    fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
+      .then(response => response.json())
+      .then(responseData => 
+      {
+        this.setState({ dogs: responseData.photos.photo });
+        
+      })
+      .catch(error => 
+      {
+        console.log('Error fetching and parsing data', error);
+      })
+  }
+  searchSunsets = (query = "sunsets") => 
+  {
+    fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&content_type=1`)
+      .then(response => response.json())
+      .then(responseData => 
+      {
+        this.setState({ sunsets: responseData.photos.photo });
         
       })
       .catch(error => 
@@ -86,7 +136,31 @@ class App extends React.Component {
                 newQuery={this.handleQuery}
                 /> } />
 
-            <Route exact path="/:thing" render={ (props) => // Responds whenever something is searched or clicked on that changes the init url
+            <Route exact path="/cats" render={ (props) => // Takes care of initial/main page
+              <PhotoContainer 
+                data={this.state.cats} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } />
+
+            <Route exact path="/dogs" render={ (props) => // Takes care of initial/main page
+              <PhotoContainer 
+                data={this.state.dogs} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } />
+
+            <Route exact path="/sunsets" render={ (props) => // Takes care of initial/main page
+              <PhotoContainer 
+                data={this.state.sunsets} {...props}
+                query={this.state.curQuery}
+                search={this.searchFetch}
+                newQuery={this.handleQuery}
+                /> } />
+
+            <Route exact path="/search/:thing" render={ (props) => // Responds whenever something is searched or clicked on that changes the init url
               <PhotoContainer
                 data={this.state.pics} {...props}
                 query={this.state.curQuery}

@@ -3,13 +3,15 @@ import React from 'react';
 import Photo from './Photo';
 
 class PhotoContainer extends React.Component {
-    
-    handleQuery = (thing) => {
-        this.props.newQuery(thing)
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            mounted: false
+        };
     }
-
-    render () {
-        let counter = 0; //(controling for init exe of code)
+    
+    componentDidMount(){
         // Trying to take care of times when query is not the default
         // This works by just calling the newQuery function whenever its not just "localhost:3000"
         if(this.props.match.params.thing)
@@ -23,28 +25,47 @@ class PhotoContainer extends React.Component {
             }
             else
             {
-                this.handleQuery(thing);
+                this.props.newQuery(thing);
+                if(this.props.data.length === 0)
+                {
+
+                }
             }
         }
+        this.setState({
+            mounted: true
+        });
+    }
+
+    render () {
+        console.log("skipped mounting");  
         const results = this.props.data;
         let title = this.props.query.toString().toUpperCase();
+        if (this.props.match.path === "/cats")
+        {
+            title = "CATS";
+        }
+        if (this.props.match.path === "/dogs")
+        {
+            title = "DOGS";
+        }
+        if (this.props.match.path === "/sunsets")
+        {
+            title = "SUNSETS";
+        }
 
         // Setting correct response when there is no results
         // **** TRYING TO CHANGE URL HERE **** But for some reason history.push doesnt appear to change it
         // The counter > 0 is because it goes into infinite loop because of the initial run of the program without fetch
-        if(results.length === 0 && counter > 0)
+        console.log("results.length: " + results.length + " counter: " + this.state.mounted);
+        
+        if(results.length === 0 && this.state.mounted)
         {
-            this.props.history.push(`/${title}`);
-            title = "NO RESULTS FOUND FOR " + title;
+            title = `No results found for ${title}, try a different search..`;
+            console.log(title);
 
         }
-
-        // Setting correct response when its cats, dogs or sunsets
-        // Planning on changing url to correct search result here
-        if(this.props.query.toString() !== "cats")
-        {
-
-        }
+        
         let pics = results.map(pic => 
                 <Photo
                     farm={pic.farm}
@@ -55,8 +76,7 @@ class PhotoContainer extends React.Component {
                     key={pic.id}
                 />
         );
-            console.log(this.props.query);
-            counter =+ 1; //UPDATING counter here
+            
         return (
             <div className="photo-container">
                 <h2>{title}</h2>
