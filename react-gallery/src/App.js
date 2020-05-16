@@ -28,7 +28,8 @@ class App extends React.Component {
       cats: [],
       dogs: [],
       sunsets: [],
-      curQuery: "soccer"
+      curQuery: "soccer",
+      isSearch: false,
     };
   }
 
@@ -125,7 +126,8 @@ class App extends React.Component {
     if (this._isMounted)
     {
       this.setState({
-          curQuery: newQuery 
+          curQuery: newQuery,
+          isSearch: true
       }, () => this.searchFetch());
     }
   }
@@ -133,14 +135,15 @@ class App extends React.Component {
   componentWillUnmount() {
     this._isMounted =false;
   }
-
+  
   render() {
     return (
        <BrowserRouter>
         <div className="container">
           <SearchForm //Both Searchform and Nav are headers so not included in Switch: learned the hard way!
             newQuery={this.handleQuery}
-          /> 
+            isSearch={this.state.isSearch} 
+          />
           <Nav search={this.searchFetch} />
 
           <Switch>
@@ -150,6 +153,7 @@ class App extends React.Component {
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
+                isSearch={this.state.isSearch}
                 /> } />
 
             <Route exact path="/cats" render={ (props) => // Takes care of /cats page: each of the following also sends as props the corresponding data
@@ -158,6 +162,7 @@ class App extends React.Component {
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
+                isSearch={this.state.isSearch}
                 /> } />
 
             <Route exact path="/dogs" render={ (props) => // Takes care of /dogs page
@@ -166,6 +171,7 @@ class App extends React.Component {
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
+                isSearch={this.state.isSearch}
                 /> } />
 
             <Route exact path="/sunsets" render={ (props) => // Takes care of /sunsets page
@@ -174,6 +180,7 @@ class App extends React.Component {
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
+                isSearch={this.state.isSearch}
                 /> } />
 
             <Route exact path="/search/:thing" render={ (props) => // Responds whenever something is searched and following route component takes care of notfound urls
@@ -182,6 +189,7 @@ class App extends React.Component {
                 query={this.state.curQuery}
                 search={this.searchFetch}
                 newQuery={this.handleQuery}
+                isSearch={this.state.isSearch}
               /> } />
             
             <Route component={NotFound} /> 

@@ -10,19 +10,27 @@ class PhotoContainer extends React.Component {
             mounted: false
         };
     }
-    
     //Used this to prevent infinite loop when trying to check for results with no images
+    // Takes care of showing initial loading screen and has delay to make sure that it shows
     componentDidMount(){ 
-        this.setState({
-            mounted: true
-        });
+          this.loadingPrompt
+            .then(val => console.log(val))
+            .then(() => 
+                this.setState({ 
+                    mounted: true 
+                }));
     }
+
+    loadingPrompt = new Promise ( (resolve, reject) => {
+        setTimeout(() => {
+            resolve('Setting delay to show loading..');
+        }, 1000);
+    })
 
     render () {
         // This first if will make sure the right content is displayed each time you use the back and forward buttons
         if((this.props.match.params.thing) && (this.props.query !== this.props.match.params.thing))
          {
-             console.log("Now i'm gonna change the state");
              this.props.search(this.props.match.params.thing);
          }
          // This will make sure the default path "/" gets set back to soccer when going back and forward
@@ -49,11 +57,11 @@ class PhotoContainer extends React.Component {
         }
 
         // Setting correct response when there is no results and while waiting
-        if(results.length === 0 && this.state.mounted)
+        if(results.length < 1 && this.state.mounted && this.props.isSearch)
         {
             title = `No results found for ${title} yet.. try a different search..`;
         }
-        
+
         let pics = results.map(pic => 
                 <Photo
                     farm={pic.farm}
@@ -69,51 +77,16 @@ class PhotoContainer extends React.Component {
          * Used below website to figure out about conditional rendering for "Loading.."
          * https://www.robinwieruch.de/conditional-rendering-react
          */
-        if(this.state.mounted)
-        {
-            return (
-                
-                <div className="photo-container">
-                    <h2>{title}</h2>
-                        <ul>
-                            {pics} 
-                        </ul>
-                </div>  
-            );
-        }
-        else
-        {
-            return (
-                <div className="photo-container">
-                    <h2>Loading..</h2>
-                </div>
-            );
-        }
+        
+        return (
+            <div>
+                {this.state.mounted 
+                    ? <div className="photo-container"><h2>{title}</h2><ul>{pics}</ul></div>
+                    : <h1>Loading your content :D</h1>
+                }
+            </div>
+        );
     }
 }
 
 export default PhotoContainer;
-
-/** CODE THAT I WAS TOO AFRAID TO DELETE
- * // Trying to take care of times when query is not the default
-        // This works by just calling the newQuery function whenever its not just "localhost:3000"
-        // if(this.props.match.params.thing)
-        // {
-        //     let thing = this.props.match.params.thing.toString();
-        //     console.log("thing: " + thing);
-        //     let query = this.props.query.toString();
-        //     if (thing === query)
-        //     {
-        //         console.log("FINALLY");
-        //     }
-        //     else
-        //     {
-        //         this.props.newQuery(thing);
-        //         if(this.props.data.length === 0)
-        //         {
-
-        //         }
-        //     }
-        // }
- * 
- */
