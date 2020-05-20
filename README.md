@@ -18,3 +18,6 @@ Used the popular and in-demand React library to create an image gallery app. Use
 3. Run 'npm start' to get program running
 4. Visit url: localhost:3000
 
+## Deploying to heroku:
+--warning: LF will be replaced by CRLF in react-gallery/package.json.
+The file will have its original line endings in your working directory
